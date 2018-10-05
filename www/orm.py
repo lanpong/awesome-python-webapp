@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 import asyncio
 import logging
 import aiomysql
@@ -143,7 +145,9 @@ class ModelMetaclass(type):
 
 
 class Model(dict, metaclass=ModelMetaclass):
-
+    """
+    ORM 映射
+    """
     def __init__(self, **kw):
         super(Model, self).__init__(**kw)
 
@@ -161,7 +165,7 @@ class Model(dict, metaclass=ModelMetaclass):
 
     def getValueOrDefault(self, key):
         value = getattr(self, key, None)
-        if value if None:
+        if value is None:
             field = self.__mappings__[key]
             if field.default is not None:
                 value = field.default() if callable(field.default) else field.default
@@ -188,7 +192,7 @@ class Model(dict, metaclass=ModelMetaclass):
             if isinstance(limit, int):
                 sql.append('?')
                 args.append(limit)
-            elif isinstance(limit, tuple) an len(limit) == 2:
+            elif isinstance(limit, tuple) and len(limit) == 2:
                 sql.append('?, ?')
                 args.append(limit)
             else:
