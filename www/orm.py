@@ -34,7 +34,7 @@ async def select(sql, args, size=None):
     global __pool
     async with __pool.get() as conn:
         async with conn.cursor(aiomysql.DictCursor) as cur:
-            await cur.execute(sql.replace('?', '%s'), args or ())
+            await cur.execute(sql.replace('?', '%s'), args)
             if size:
                 rs = await cur.fetchmany(size)
             else:
@@ -178,7 +178,7 @@ class Model(dict, metaclass=ModelMetaclass):
         'find objects by where clause.'
         sql = [cls.__select__]
         if where:
-            slq.append('where')
+            sql.append('where')
             sql.append(where)
         if args is None:
             args = []

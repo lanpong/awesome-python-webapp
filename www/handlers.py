@@ -94,15 +94,15 @@ async def index(*, page='1'):
         blogs = await Blog.findAll(orderBy='created_at desc', limit=(page.offset, page.limit))
     return {
         '__template__': 'blogs.html',
-        'blogs': blogs,
-        'page': page
+        'page': page,
+        'blogs': blogs
     }
 
 @get('/register')
 def register():
     ' register '
     return {
-        '__template__': 'regiter.html'
+        '__template__': 'register.html'
     }
 
 @get('/signin')
@@ -184,15 +184,15 @@ def manage_users(*, page='1'):
         'page_index': get_page_index(page)
     }
 
-@get('/personal/edit')
-async def edit_user():
-    return {
-        '__template__': 'user_edit.html'
-    }
+# @get('/personal/edit')
+# async def edit_user():
+#     return {
+#         '__template__': 'user_edit.html'
+#     }
 
 # ----api----
 
-@get('/api/authenticate')
+@post('/api/authenticate')
 async def authenticate(*, email, passwd):
     if not email:
         raise APIValueError('email', 'Invalid email.')
@@ -203,7 +203,7 @@ async def authenticate(*, email, passwd):
         raise APIValueError('email', 'Email not exist.')
     user = users[0]
     sha1 = hashlib.sha1()
-    sha1.update(users.id.encode('utf-8'))
+    sha1.update(user.id.encode('utf-8'))
     sha1.update(b':')
     sha1.update(passwd.encode('utf-8'))
     if user.passwd != sha1.hexdigest():
@@ -248,7 +248,7 @@ async def api_delete_comments(id, request):
     c = await Comment.find(id)
     if c is None:
         raise APIResourceNotFoundError('Comment')
-    await c.delete()
+    await c.remove()
     return dict(id=id)
 
 @get('/api/users')
