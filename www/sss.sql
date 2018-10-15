@@ -4,7 +4,7 @@ create database awesome;
 
 use awesome;
 
-grant select, insert, update, delete on awesome.* to 'root'@'localhost' identified by '123456';
+grant select, insert, update, delete on awesome.* to 'root'@'localhost' identified by ' ';
 
 create table users (
     `id` varchar(50) not null,
